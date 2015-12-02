@@ -8,8 +8,6 @@ buildscript {
         classpath("io.spring.gradle:dependency-management-plugin:${springDependencyManagementPluginVersion}")
         classpath("org.unbroken-dome.gradle-plugins:gradle-testsets-plugin:${testSetsPluginVersion}")
         classpath("com.github.jengelman.gradle.plugins:shadow:${shadowPluginVersion}")
-        classpath("net.serenity-bdd:serenity-gradle-plugin:${serenityVersion}")
-
     }
 }
 apply plugin: 'java'
@@ -19,7 +17,6 @@ apply plugin: 'idea'
 apply plugin: 'io.spring.dependency-management'
 apply plugin: 'org.unbroken-dome.test-sets'
 apply plugin: 'com.github.johnrengelman.shadow'
-apply plugin: 'net.serenity-bdd.aggregator'
 
 jar {
     baseName = rootProject.name
@@ -45,10 +42,9 @@ repositories {
 dependencies {
     compile('org.springframework.boot:spring-boot-starter-integration')
     compile('org.codehaus.groovy:groovy')
-    testCompile("net.serenity-bdd:core:${serenityVersion}")
-    testCompile("net.serenity-bdd:serenity-junit:${serenityVersion}")
-    testCompile("net.serenity-bdd:serenity-jbehave:${serenityVersion}")
     testCompile('org.springframework.boot:spring-boot-starter-test')
+    testCompile("org.spockframework:spock-core:${spockVersion}")
+    testCompile("org.spockframework:spock-spring:${spockVersion}")
 }
 
 testSets {
@@ -72,5 +68,3 @@ eclipse {
 task wrapper(type: Wrapper) {
     gradleVersion = '2.9'
 }
-
-gradle.startParameter.continueOnFailure = true
