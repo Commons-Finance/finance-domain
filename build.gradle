@@ -42,9 +42,11 @@ repositories {
 dependencies {
     compile('org.springframework.boot:spring-boot-starter')
     compile('org.codehaus.groovy:groovy')
+    compile("org.apache.commons:commons-math3:3.5")
+    compile("org.jscience:jscience:4.3.1")
     testCompile('org.springframework.boot:spring-boot-starter-test')
-    testCompile("org.spockframework:spock-core:${spockVersion}")
-    testCompile("org.spockframework:spock-spring:${spockVersion}")
+    testCompile('org.spockframework:spock-core')
+    testCompile('org.spockframework:spock-spring')
 }
 
 testSets {
