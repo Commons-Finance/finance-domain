@@ -24,7 +24,7 @@ jar {
     manifest {
         attributes 'Implementation-Title': 'Finance Domain Common API',
                 'Implementation-Version': version,
-                'Built-By': System.getProperty('user.name'),
+                'Built-By': "Michael Harris",
                 'Built-Date': new Date(),
                 'Built-JDK': System.getProperty('java.version')
     }
@@ -40,7 +40,7 @@ repositories {
 
 
 dependencies {
-    compile('org.springframework.boot:spring-boot-starter-integration')
+    compile('org.springframework.boot:spring-boot-starter')
     compile('org.codehaus.groovy:groovy')
     testCompile('org.springframework.boot:spring-boot-starter-test')
     testCompile("org.spockframework:spock-core:${spockVersion}")
