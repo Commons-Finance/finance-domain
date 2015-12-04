@@ -5,15 +5,26 @@ package org.darcstarsolutions.common.finance.domain
  */
 class Bond extends Asset<Bond> {
     final double faceValue
-    final double interestRate
-    final int timeToMaturity
     final double currentValue
+    final double interestRate
+    final double couponRate
+    final int timeToMaturity
+    final CompoundingPeriod compoundingPeriod
 
     private Bond(Builder builder) {
         this.faceValue = builder.faceValue
         this.currentValue = builder.currentValue
         this.interestRate = builder.interestRate
+        this.couponRate = builder.couponRate
         this.timeToMaturity = builder.timeToMaturity
+        this.compoundingPeriod = builder.compoundingPeriod
+    }
+
+
+
+    @Override
+    int compareTo(Bond o) {
+        return Double.compare(faceValue, o.faceValue)
     }
 
     @Override
@@ -21,22 +32,20 @@ class Bond extends Asset<Bond> {
         return "Bond{" +
                 "faceValue=" + faceValue +
                 ", interestRate=" + interestRate +
+                ", couponRate=" + couponRate +
                 ", timeToMaturity=" + timeToMaturity +
                 ", currentValue=" + currentValue +
                 '}';
-    }
-
-    @Override
-    int compareTo(Bond o) {
-        return Double.compare(faceValue, o.faceValue)
     }
 
     public static class Builder {
 
         private double faceValue
         private double currentValue
-        double interestRate
-        int timeToMaturity
+        private double interestRate
+        private double couponRate
+        private int timeToMaturity
+        private CompoundingPeriod compoundingPeriod
 
         Builder faceValue(double faceValue) {
             this.faceValue = faceValue
@@ -58,10 +67,21 @@ class Bond extends Asset<Bond> {
             return this
         }
 
+        Builder couponRate(double couponRate) {
+            this.couponRate = couponRate
+            return this
+        }
+
+        Builder compoundingPeriod(CompoundingPeriod compoundingPeriod) {
+            this.compoundingPeriod = compoundingPeriod
+            return this
+        }
+
         public Bond build() {
             return new Bond(this)
         }
-    }
 
+
+    }
 
 }

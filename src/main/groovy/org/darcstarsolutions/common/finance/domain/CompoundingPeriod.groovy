@@ -9,7 +9,7 @@ public enum CompoundingPeriod {
     QUARTERLY(4),
     MONTHLY(12),
     WEEKLY(52),
-    DAILY(360),
+    DAILY(365),
     DAILY_LEAP_YEAR(364),
     DAILY_NO_LEAP(365),
     DAILY_360(360),
