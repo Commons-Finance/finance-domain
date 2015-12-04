@@ -22,6 +22,7 @@ public enum CompoundingPeriod {
         this.value = value
     }
 
+
     public int getValue() {
         return value
     }

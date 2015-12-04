@@ -31,12 +31,14 @@ class Bond extends Asset<Bond> {
     public String toString() {
         return "Bond{" +
                 "faceValue=" + faceValue +
+                ", currentValue=" + currentValue +
                 ", interestRate=" + interestRate +
                 ", couponRate=" + couponRate +
                 ", timeToMaturity=" + timeToMaturity +
-                ", currentValue=" + currentValue +
+                ", compoundingPeriod=" + compoundingPeriod +
                 '}';
     }
+
 
     public static class Builder {
 
