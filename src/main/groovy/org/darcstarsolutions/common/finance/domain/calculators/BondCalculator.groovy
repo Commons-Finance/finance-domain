@@ -9,7 +9,7 @@ import java.math.RoundingMode
 /**
  * Created by mharris on 12/2/15.
  */
-class BondCalculator {
+class BondCalculator implements AssetCalculator<Bond> {
     private static final Logger logger = LoggerFactory.getLogger(BondCalculator.class)
     CompoundingEngine compoundingEngine
 

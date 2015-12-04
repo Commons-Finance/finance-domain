@@ -3,7 +3,7 @@ package org.darcstarsolutions.common.finance.domain
 /**
  * Created by mharris on 12/3/15.
  */
-class Bond {
+class Bond extends Asset<Bond> {
     final double faceValue
     final double interestRate
     final int timeToMaturity
@@ -24,6 +24,11 @@ class Bond {
                 ", timeToMaturity=" + timeToMaturity +
                 ", currentValue=" + currentValue +
                 '}';
+    }
+
+    @Override
+    int compareTo(Bond o) {
+        return Double.compare(faceValue, o.faceValue)
     }
 
     public static class Builder {
