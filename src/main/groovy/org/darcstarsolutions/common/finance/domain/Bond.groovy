@@ -4,20 +4,59 @@ package org.darcstarsolutions.common.finance.domain
  * Created by mharris on 12/3/15.
  */
 class Bond {
-    double faceValue
-    double interestRate
-    int timeToMaturity
-    double currentValue
+    final double faceValue
+    final double interestRate
+    final int timeToMaturity
+    final double currentValue
 
-    Bond(double faceValue, double interestRate, int timeToMaturity) {
-        this.faceValue = faceValue
-        this.interestRate = interestRate
-        this.timeToMaturity = timeToMaturity
+    private Bond(Builder builder) {
+        this.faceValue = builder.faceValue
+        this.currentValue = builder.currentValue
+        this.interestRate = builder.interestRate
+        this.timeToMaturity = builder.timeToMaturity
     }
 
-    Bond(double faceValue, int timeToMaturity, double currentValue) {
-        this.faceValue = faceValue
-        this.timeToMaturity = timeToMaturity
-        this.currentValue = currentValue
+    @Override
+    public String toString() {
+        return "Bond{" +
+                "faceValue=" + faceValue +
+                ", interestRate=" + interestRate +
+                ", timeToMaturity=" + timeToMaturity +
+                ", currentValue=" + currentValue +
+                '}';
     }
+
+    public static class Builder {
+
+        private double faceValue
+        private double currentValue
+        double interestRate
+        int timeToMaturity
+
+        Builder faceValue(double faceValue) {
+            this.faceValue = faceValue
+            return this
+        }
+
+        Builder currentValue(double currentValue) {
+            this.currentValue = currentValue
+            return this
+        }
+
+        Builder interestRate(double interestRate) {
+            this.interestRate = interestRate
+            return this
+        }
+
+        Builder timeToMaturity(int timeToMaturity) {
+            this.timeToMaturity = timeToMaturity
+            return this
+        }
+
+        public Bond build() {
+            return new Bond(this)
+        }
+    }
+
+
 }

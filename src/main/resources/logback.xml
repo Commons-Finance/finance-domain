@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <include resource="org/springframework/boot/logging/logback/base.xml"/>
+    <logger name="org.darcstarsolutions.common" level="DEBUG">
+        <appender-ref ref="STDOUT"/>
+    </logger>
+    <springProfile name="test">
+
+
+    </springProfile>
+
+</configuration>
