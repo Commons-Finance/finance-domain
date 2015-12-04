@@ -5,8 +5,6 @@ import au.com.bytecode.opencsv.CSVReader
 import org.darcstarsolutions.common.finance.domain.Bond
 import org.darcstarsolutions.common.finance.domain.CompoundingPeriod
 import org.darcstarsolutions.common.finance.domain.calculators.config.BondCalculatorTestConfiguration
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
 import org.springframework.core.io.ClassPathResource
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.ContextConfiguration
@@ -26,23 +24,20 @@ import static org.junit.Assert.assertThat
 @ContextConfiguration(classes = [BondCalculatorTestConfiguration.class])
 class StandardBondCalculatorSpec extends Specification {
 
-    private static final Logger logger = LoggerFactory.getLogger(StandardBondCalculatorSpec.class)
-
     @Resource
     BondCalculator standardBondCalculator
 
     @Shared
-    ClassPathResource standardBondCsvFile = new ClassPathResource("standard-bonds.csv")
+    ClassPathResource bondCsvFile = new ClassPathResource("standard-bonds.csv")
 
     @Shared
-    CSVReader standardBondTestSet = new CSVReader(new BufferedReader(new FileReader(standardBondCsvFile.getFile())), '|' as char, CSVParser.DEFAULT_QUOTE_CHARACTER, 1)
+    CSVReader bondTestSet = new CSVReader(new BufferedReader(new FileReader(bondCsvFile.getFile())), '|' as char, CSVParser.DEFAULT_QUOTE_CHARACTER, 1)
 
     def setup() {
         assertThat(standardBondCalculator, is(not(null)))
-        assertThat(standardBondCsvFile, is(not(null)))
-        assertThat(standardBondTestSet, is(not(null)))
+        bondTestSet = new CSVReader(new BufferedReader(new FileReader(bondCsvFile.getFile())), '|' as char, CSVParser.DEFAULT_QUOTE_CHARACTER, 1)
+        assertThat(bondTestSet, is(not(null)))
     }
-
 
     @Unroll
     def "check calculated coupon value #couponValue for face value #bond.faceValue, coupon rate #bond.couponRate and periods #bond.compoundingPeriod"() {
@@ -50,10 +45,20 @@ class StandardBondCalculatorSpec extends Specification {
         assertThat(standardBondCalculator.calculateCouponValue(bond), closeTo(BigDecimal.valueOf(Double.valueOf(couponValue)), 0.01))
 
         where:
-
-        [faceValue, couponRate, compoundingPeriod, couponValue] << standardBondTestSet.readAll()
+        [faceValue, couponRate, compoundingPeriod, couponValue] << bondTestSet.readAll()
 
         bond = new Bond.Builder().faceValue(Double.valueOf(faceValue)).couponRate(Double.valueOf(couponRate)).compoundingPeriod(CompoundingPeriod.valueOf(compoundingPeriod.toString().trim())).build()
+    }
+
+    @Unroll
+    def "check calculated coupon rate #couponRate for face value #bond.faceValue, coupon rate #bond.couponRate and periods #bond.compoundingPeriod"() {
+        expect:
+        assertThat(standardBondCalculator.calculateCouponRate(bond), closeTo(BigDecimal.valueOf(Double.valueOf(couponRate)), 0.01))
+
+        where:
+        [faceValue, couponRate, compoundingPeriod, couponValue] << bondTestSet.readAll()
+
+        bond = new Bond.Builder().faceValue(Double.valueOf(faceValue)).couponValue(Double.valueOf(couponValue)).compoundingPeriod(CompoundingPeriod.valueOf(compoundingPeriod.toString().trim())).build()
     }
 
 }

@@ -63,4 +63,13 @@ class BondCalculator implements AssetCalculator<Bond> {
         logger.debug("Returned Coupon Value: {}", result)
         return result
     }
+
+    BigDecimal calculateCouponRate(Bond bond) {
+        logger.trace("Calculating coupon rate for: {}", bond)
+        def couponRate = bond.couponValue * bond.compoundingPeriod.value / bond.faceValue
+        logger.debug("Calculated Coupon Rate: {}", couponRate)
+        BigDecimal result = BigDecimal.valueOf(couponRate).setScale(2, RoundingMode.HALF_EVEN)
+        logger.debug("Returned Coupon Rate: {}", result)
+        return result
+    }
 }

@@ -8,6 +8,7 @@ class Bond extends Asset<Bond> {
     final double currentValue
     final double interestRate
     final double couponRate
+    final double couponValue
     final int timeToMaturity
     final CompoundingPeriod compoundingPeriod
 
@@ -16,6 +17,7 @@ class Bond extends Asset<Bond> {
         this.currentValue = builder.currentValue
         this.interestRate = builder.interestRate
         this.couponRate = builder.couponRate
+        this.couponValue = builder.couponValue
         this.timeToMaturity = builder.timeToMaturity
         this.compoundingPeriod = builder.compoundingPeriod
     }
@@ -46,6 +48,7 @@ class Bond extends Asset<Bond> {
         private double currentValue
         private double interestRate
         private double couponRate
+        private double couponValue
         private int timeToMaturity
         private CompoundingPeriod compoundingPeriod
 
@@ -79,10 +82,14 @@ class Bond extends Asset<Bond> {
             return this
         }
 
+        Builder couponValue(double couponValue) {
+            this.couponValue = couponValue
+            return this
+        }
+
         public Bond build() {
             return new Bond(this)
         }
-
 
     }
 
