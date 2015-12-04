@@ -19,28 +19,28 @@ import static org.junit.Assert.assertThat
 
 @ActiveProfiles(value = ["test"])
 @ContextConfiguration(classes = [BondCalculatorTestConfiguration.class])
-class SimpleCompoundingBondCalculatorSpec extends Specification {
+class ZeroCouponBondCalculatorSpec extends Specification {
 
     @Resource
     CompoundingEngine simpleAnnuallyCompoundingEngine
 
     @Resource
-    BondCalculator simpleCompoundingBondCalculator
+    BondCalculator zeroCouponBondCalculator
 
     def setup() {
-        assertThat(simpleCompoundingBondCalculator, instanceOf(BondCalculator))
+        assertThat(zeroCouponBondCalculator, instanceOf(BondCalculator))
     }
 
     def "confirming that simpleCompoundingBondCalculator is using the simple and annually compounding engine"() {
         expect:
-        assertThat(simpleCompoundingBondCalculator.compoundingEngine, equalTo(simpleAnnuallyCompoundingEngine))
+        assertThat(zeroCouponBondCalculator.compoundingEngine, equalTo(simpleAnnuallyCompoundingEngine))
 
     }
 
     @Unroll
     def "given a zero coupon bond with face value #bond.faceValue, interest rate #bond.interestRate, and time to maturity in years #bond.timeToMaturity calculate current value #currentValue"() {
         expect:
-        assertThat(simpleCompoundingBondCalculator.calculateCurrentValue(bond), closeTo(currentValue, 0.01))
+        assertThat(zeroCouponBondCalculator.calculateCurrentValue(bond), closeTo(currentValue, 0.01))
 
         where:
         faceValue | interestRate | timeToMaturity || current
@@ -56,7 +56,7 @@ class SimpleCompoundingBondCalculatorSpec extends Specification {
     @Unroll
     def "given a zero coupon bond with face value #bond.faceValue, time to maturity in years #bond.timeToMaturity, and a current value #bond.currentValue calculate yield to maturity #yieldToMaturity"() {
         expect:
-        assertThat(simpleCompoundingBondCalculator.calculateYieldToMaturity(bond), closeTo(yieldToMaturity, 0.001))
+        assertThat(zeroCouponBondCalculator.calculateYieldToMaturity(bond), closeTo(yieldToMaturity, 0.001))
 
         where:
         faceValue | timeToMaturity | currentValue || yield
@@ -72,7 +72,7 @@ class SimpleCompoundingBondCalculatorSpec extends Specification {
     @Unroll
     def "given a zero coupon bond with current value #bond.currentValue, interest rate #bond.interestRate, and time to maturity in years #bond.timeToMaturity calculate the face value #faceValue"() {
         expect:
-        assertThat(simpleCompoundingBondCalculator.calculateFaceValue(bond), closeTo(faceValue, 0.05))
+        assertThat(zeroCouponBondCalculator.calculateFaceValue(bond), closeTo(faceValue, 0.05))
 
         where:
         currentValue | interestRate | timeToMaturity || face
