@@ -14,10 +14,12 @@ class BondCalculator implements AssetCalculator<Bond> {
 
     CompoundingEngine compoundingEngine
     YieldCalculator yieldCalculator
+    CouponCalculator<? extends Bond> couponCalculator
 
-    BondCalculator(CompoundingEngine compoundingEngine, YieldCalculator yieldCalculator) {
+    BondCalculator(CompoundingEngine compoundingEngine, YieldCalculator yieldCalculator, CouponCalculator<? extends Bond> couponCalculator) {
         this.compoundingEngine = compoundingEngine
         this.yieldCalculator = yieldCalculator
+        this.couponCalculator = couponCalculator
     }
 
     BigDecimal calculateCurrentValue(Bond bond) {
@@ -56,12 +58,7 @@ class BondCalculator implements AssetCalculator<Bond> {
     }
 
     BigDecimal calculateCouponValue(Bond bond) {
-        logger.trace("Calculating coupon value for: {}", bond)
-        def couponValue = bond.faceValue * bond.couponRate / bond.compoundingPeriod.value
-        logger.debug("Calculated Coupon Value: {}", couponValue)
-        BigDecimal result = BigDecimal.valueOf(couponValue).setScale(2, RoundingMode.HALF_EVEN)
-        logger.debug("Returned Coupon Value: {}", result)
-        return result
+        return couponCalculator.calculateCouponValue(bond)
     }
 
     BigDecimal calculateCouponRate(Bond bond) {

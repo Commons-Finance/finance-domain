@@ -1,10 +1,9 @@
 package org.darcstarsolutions.common.finance.domain.calculators
-
 import au.com.bytecode.opencsv.CSVParser
 import au.com.bytecode.opencsv.CSVReader
 import org.darcstarsolutions.common.finance.domain.Bond
 import org.darcstarsolutions.common.finance.domain.CompoundingEngine
-import org.darcstarsolutions.common.finance.domain.calculators.config.BondCalculatorTestConfiguration
+import org.darcstarsolutions.common.finance.domain.calculators.config.ZeroCouponBondCalculatorTestConfiguration
 import org.springframework.core.io.ClassPathResource
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.ContextConfiguration
@@ -21,7 +20,7 @@ import static org.junit.Assert.assertThat
  */
 
 @ActiveProfiles(value = ["test"])
-@ContextConfiguration(classes = [BondCalculatorTestConfiguration.class])
+@ContextConfiguration(classes = [ZeroCouponBondCalculatorTestConfiguration.class])
 class ZeroCouponBondCalculatorSpec extends Specification {
 
     @Resource
@@ -78,5 +77,16 @@ class ZeroCouponBondCalculatorSpec extends Specification {
         [faceValue, interestRate, timeToMaturity, currentValue] << bondTestSet.readAll()
 
         bond = new Bond.Builder().currentValue(Double.valueOf(currentValue)).interestRate(Double.valueOf(interestRate)).timeToMaturity(Integer.valueOf(timeToMaturity)).build()
+    }
+
+    @Unroll
+    def "given a zero coupon bond with current value #bond.currentValue and face value #bond.faceValue calculate the coupon value #couponValue"() {
+        expect:
+        assertThat(zeroCouponBondCalculator.calculateCouponValue(bond), closeTo(BigDecimal.valueOf(Double.valueOf(couponValue)), 0.05))
+
+        where:
+        [faceValue, _, _, currentValue, couponValue] << bondTestSet.readAll()
+
+        bond = new Bond.Builder().faceValue(Double.valueOf(faceValue)).currentValue(Double.valueOf(currentValue)).build()
     }
 }

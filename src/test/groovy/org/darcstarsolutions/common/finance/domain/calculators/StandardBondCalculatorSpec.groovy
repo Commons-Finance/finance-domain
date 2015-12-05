@@ -4,7 +4,7 @@ import au.com.bytecode.opencsv.CSVParser
 import au.com.bytecode.opencsv.CSVReader
 import org.darcstarsolutions.common.finance.domain.Bond
 import org.darcstarsolutions.common.finance.domain.CompoundingPeriod
-import org.darcstarsolutions.common.finance.domain.calculators.config.BondCalculatorTestConfiguration
+import org.darcstarsolutions.common.finance.domain.calculators.config.StandardBondCalculatorTestConfiguration
 import org.springframework.core.io.ClassPathResource
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.ContextConfiguration
@@ -21,7 +21,7 @@ import static org.junit.Assert.assertThat
  */
 
 @ActiveProfiles(value = ["test"])
-@ContextConfiguration(classes = [BondCalculatorTestConfiguration.class])
+@ContextConfiguration(classes = [StandardBondCalculatorTestConfiguration.class])
 class StandardBondCalculatorSpec extends Specification {
 
     @Resource
@@ -33,9 +33,11 @@ class StandardBondCalculatorSpec extends Specification {
     @Shared
     CSVReader bondTestSet = new CSVReader(new BufferedReader(new FileReader(bondCsvFile.getFile())), '|' as char, CSVParser.DEFAULT_QUOTE_CHARACTER, 1)
 
+    @Shared
+    def dataSet = bondTestSet.readAll()
+
     def setup() {
         assertThat(standardBondCalculator, is(not(null)))
-        bondTestSet = new CSVReader(new BufferedReader(new FileReader(bondCsvFile.getFile())), '|' as char, CSVParser.DEFAULT_QUOTE_CHARACTER, 1)
         assertThat(bondTestSet, is(not(null)))
     }
 
@@ -45,7 +47,7 @@ class StandardBondCalculatorSpec extends Specification {
         assertThat(standardBondCalculator.calculateCouponValue(bond), closeTo(BigDecimal.valueOf(Double.valueOf(couponValue)), 0.01))
 
         where:
-        [faceValue, couponRate, compoundingPeriod, couponValue] << bondTestSet.readAll()
+        [faceValue, couponRate, compoundingPeriod, couponValue] << dataSet
 
         bond = new Bond.Builder().faceValue(Double.valueOf(faceValue)).couponRate(Double.valueOf(couponRate)).compoundingPeriod(CompoundingPeriod.valueOf(compoundingPeriod.toString().trim())).build()
     }
@@ -56,7 +58,7 @@ class StandardBondCalculatorSpec extends Specification {
         assertThat(standardBondCalculator.calculateCouponRate(bond), closeTo(BigDecimal.valueOf(Double.valueOf(couponRate)), 0.01))
 
         where:
-        [faceValue, couponRate, compoundingPeriod, couponValue] << bondTestSet.readAll()
+        [faceValue, couponRate, compoundingPeriod, couponValue] << dataSet
 
         bond = new Bond.Builder().faceValue(Double.valueOf(faceValue)).couponValue(Double.valueOf(couponValue)).compoundingPeriod(CompoundingPeriod.valueOf(compoundingPeriod.toString().trim())).build()
     }
