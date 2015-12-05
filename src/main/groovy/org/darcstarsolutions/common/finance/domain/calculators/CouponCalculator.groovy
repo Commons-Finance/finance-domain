@@ -9,4 +9,5 @@ interface CouponCalculator<T extends Bond> extends AssetCalculator<T> {
 
     public BigDecimal calculateCouponValue(T bond)
 
+    public BigDecimal calculateCouponRate(T bond)
 }

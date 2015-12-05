@@ -55,7 +55,7 @@ class StandardBondCalculatorSpec extends Specification {
     @Unroll
     def "check calculated coupon rate #couponRate for face value #bond.faceValue, coupon rate #bond.couponRate and periods #bond.compoundingPeriod"() {
         expect:
-        assertThat(standardBondCalculator.calculateCouponRate(bond), closeTo(BigDecimal.valueOf(Double.valueOf(couponRate)), 0.01))
+        assertThat(standardBondCalculator.calculateCouponRate(bond), closeTo(BigDecimal.valueOf(Double.valueOf(couponRate)), 0.0001))
 
         where:
         [faceValue, couponRate, compoundingPeriod, couponValue] << dataSet

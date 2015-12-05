@@ -35,15 +35,16 @@ class ZeroCouponBondCalculatorSpec extends Specification {
     @Shared
     CSVReader bondTestSet = new CSVReader(new BufferedReader(new FileReader(bondCsvFile.getFile())), '|' as char, CSVParser.DEFAULT_QUOTE_CHARACTER, 1)
 
+    @Shared
+    def dataSet = bondTestSet.readAll()
+
     def setup() {
         assertThat(zeroCouponBondCalculator, instanceOf(BondCalculator))
-        bondTestSet = new CSVReader(new BufferedReader(new FileReader(bondCsvFile.getFile())), '|' as char, CSVParser.DEFAULT_QUOTE_CHARACTER, 1)
     }
 
     def "confirming that simpleCompoundingBondCalculator is using the simple and annually compounding engine"() {
         expect:
         assertThat(zeroCouponBondCalculator.compoundingEngine, equalTo(simpleAnnuallyCompoundingEngine))
-
     }
 
     @Unroll
@@ -52,7 +53,7 @@ class ZeroCouponBondCalculatorSpec extends Specification {
         assertThat(zeroCouponBondCalculator.calculateCurrentValue(bond), closeTo(BigDecimal.valueOf(Double.valueOf(currentValue)), 0.01))
 
         where:
-        [faceValue, interestRate, timeToMaturity, currentValue] << bondTestSet.readAll()
+        [faceValue, interestRate, timeToMaturity, currentValue] << dataSet
 
         bond = new Bond.Builder().faceValue(Double.valueOf(faceValue)).interestRate(Double.valueOf(interestRate)).timeToMaturity(Integer.valueOf(timeToMaturity)).build()
     }
@@ -63,7 +64,7 @@ class ZeroCouponBondCalculatorSpec extends Specification {
         assertThat(zeroCouponBondCalculator.calculateYieldToMaturity(bond), closeTo(BigDecimal.valueOf(Double.valueOf(yieldToMaturity)), 0.001))
 
         where:
-        [faceValue, yieldToMaturity, timeToMaturity, currentValue] << bondTestSet.readAll()
+        [faceValue, yieldToMaturity, timeToMaturity, currentValue] << dataSet
 
         bond = new Bond.Builder().faceValue(Double.valueOf(faceValue)).timeToMaturity(Integer.valueOf(timeToMaturity)).currentValue(Double.valueOf(currentValue)).build()
     }
@@ -74,7 +75,7 @@ class ZeroCouponBondCalculatorSpec extends Specification {
         assertThat(zeroCouponBondCalculator.calculateFaceValue(bond), closeTo(BigDecimal.valueOf(Double.valueOf(faceValue)), 0.05))
 
         where:
-        [faceValue, interestRate, timeToMaturity, currentValue] << bondTestSet.readAll()
+        [faceValue, interestRate, timeToMaturity, currentValue] << dataSet
 
         bond = new Bond.Builder().currentValue(Double.valueOf(currentValue)).interestRate(Double.valueOf(interestRate)).timeToMaturity(Integer.valueOf(timeToMaturity)).build()
     }
@@ -82,11 +83,22 @@ class ZeroCouponBondCalculatorSpec extends Specification {
     @Unroll
     def "given a zero coupon bond with current value #bond.currentValue and face value #bond.faceValue calculate the coupon value #couponValue"() {
         expect:
-        assertThat(zeroCouponBondCalculator.calculateCouponValue(bond), closeTo(BigDecimal.valueOf(Double.valueOf(couponValue)), 0.05))
+        assertThat(zeroCouponBondCalculator.calculateCouponValue(bond), closeTo(BigDecimal.valueOf(Double.valueOf(couponValue)), 0.0001))
 
         where:
-        [faceValue, _, _, currentValue, couponValue] << bondTestSet.readAll()
+        [faceValue, _, _, currentValue, couponValue] << dataSet
 
         bond = new Bond.Builder().faceValue(Double.valueOf(faceValue)).currentValue(Double.valueOf(currentValue)).build()
+    }
+
+    @Unroll
+    def "given a zero coupon bond with current value #bond.currentValue, time to maturity #bond.timeToMaturity in years, and face value #bond.faceValue calculate the coupon rate #couponRate"() {
+        expect:
+        assertThat(zeroCouponBondCalculator.calculateCouponRate(bond), closeTo(BigDecimal.valueOf(Double.valueOf(couponRate)), 0.05))
+
+        where:
+        [faceValue, couponRate, timeToMaturity, currentValue] << dataSet
+
+        bond = new Bond.Builder().faceValue(Double.valueOf(faceValue)).currentValue(Double.valueOf(currentValue)).timeToMaturity(Integer.valueOf(timeToMaturity)).build()
     }
 }
