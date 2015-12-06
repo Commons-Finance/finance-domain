@@ -5,7 +5,6 @@ package org.darcstarsolutions.common.finance.domain
  */
 class Bond extends Asset<Bond> {
     final double faceValue
-    final double currentValue
     final double interestRate
     final double couponRate
     final double couponValue
@@ -21,8 +20,6 @@ class Bond extends Asset<Bond> {
         this.timeToMaturity = builder.timeToMaturity
         this.compoundingPeriod = builder.compoundingPeriod
     }
-
-
 
     @Override
     int compareTo(Bond o) {
